@@ -1,5 +1,5 @@
 import pytest
-# 上記で作成したauthenticator.pyからAuthenticatorクラスをインポート
+# authenticator.pyからAuthenticatorクラスをインポート
 from authenticator import Authenticator
 
 def test_register_success():
@@ -42,4 +42,3 @@ def test_login_failure():
     # 誤ったパスワードでログインを試み、例外が発生することを確認
     with pytest.raises(ValueError, match="エラー: ユーザー名またはパスワードが正しくありません。"):
         auth.login("testuser", "wrongpassword")
-        
