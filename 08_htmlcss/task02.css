@@ -1,0 +1,16 @@
+/* header スタイル */
+.header {
+    background-color: #84ceef; /* 背景色 */
+    color: #fff; /* 文字色 */
+}
+/* h1 スタイル */
+h1 {
+    color: #e47292; /* 文字色 */
+    text-align: center; /* 中央寄せ */
+}
+
+/* footer スタイル */
+.footer {
+    background-color: #040000; /* 背景色 */
+    color: #fff; /* 文字色 */
+}
