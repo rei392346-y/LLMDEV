@@ -30,6 +30,12 @@ li {
 .delete-button {
   color: red; /* 削除ボタンの文字色を赤に設定 */
   text-decoration: none; /* 削除ボタンの下線を無くす */
+  /* 文字の周りに影をつけ、縁取りのように見せます */
+  text-shadow: 
+      1px 1px 0 #000,
+      -1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px -1px 0 #000;
 }
 
 form {

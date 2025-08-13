@@ -27,9 +27,9 @@ def index():
         return redirect(url_for("index"))
     return render_template("index.html", todos=todos)
 
-@app.route("/delete/<int:todo_id>")
+# HTTP では取得専用の GET に副作用（削除を持たせないのが原則のため、POST メソッドを使用）
+@app.route("/delete/<int:todo_id>", methods=["POST"])
 def delete(todo_id):
-    # 課題で実装します。
     # todo_id に基づいて TODO を削除する処理
     todos = load_todos()
     try:
