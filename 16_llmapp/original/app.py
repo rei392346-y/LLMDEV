@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 """
 import uuid
 from flask import Flask, render_template, request, make_response, session 
-from chatbot.graph import get_bot_response, get_messages_list, memory
+from original.graph import get_bot_response, get_messages_list, memory
 
 # Flaskアプリケーションのセットアップ
 app = Flask(__name__)
