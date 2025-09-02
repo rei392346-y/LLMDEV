@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{# jinja2のテンプレートのため、コメントアウトは <!--ではなく、"#"を使用します
+・messages リストには、ユーザーのメッセージとボットのレスポンスが交互に格納されています。
+・{% for message in messages %} ループを使って、メッセージリストから1つずつメッセージを取り出して表示します。
+・メッセージ内容は {{ message }} で表示されます。
+#}
+<div class="chat-box" id="chat-box">
+    {% for message in messages %}
+        <div>
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+
+{# フォーム部分の説明
+・ユーザーがメッセージを入力するためのフォームです。
+・method="POST" で、フォームの送信方法としてPOSTリクエストを使用しています。フォームが送信されると、Flaskサーバーに対してPOSTリクエストが送られます。
+・name="user_message" と指定された <textarea> タグに、ユーザーのメッセージが入力されます。
+　これがフォームデータとしてサーバーに送信され、request.form['user_message'] で取得されます。
+・送信ボタンは button タグで作られており、ユーザーがメッセージを送信するために使います。
+#}
+<form method="POST" action="/" id="chat-form">
+    <div class="input-box">
+        <textarea name="user_message" id="user-input" placeholder="メッセージを入力..." ></textarea>
+        <button type="submit" id="submit-button">送信</button>
+    </div>
+</form>
+{% endblock %}
