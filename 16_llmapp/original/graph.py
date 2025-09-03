@@ -8,7 +8,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain.tools.retriever import create_retriever_tool
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langgraph.graph import StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -93,10 +93,10 @@ def define_tools():
     return [retriever_tool, tavily_tool]
 
 # ===== グラフの構築 =====
-def build_graph(model_name, memory):
+def build_graph(model_name, memory, system_prompt=None):
     """
     グラフのインスタンスを作成し、ツールノードやチャットボットノードを追加します。
-    モデル名とメモリを使用して、実行可能なグラフを作成します。
+    モデル名、メモリ、システムプロンプトを使用して、実行可能なグラフを作成します。
     """
     # グラフのインスタンスを作成
     graph_builder = StateGraph(State)
@@ -119,9 +119,19 @@ def build_graph(model_name, memory):
     llm = ChatOpenAI(model_name=model_name)
     llm_with_tools = llm.bind_tools(tools)
     
+    # デフォルトのシステムプロンプト
+    default_system_prompt = "あなたは親切で丁寧なアシスタントです。ユーザーの質問に対して正確で分かりやすい回答を提供してください。"
+    
     # チャットボットの実行方法を定義
     def chatbot(state: State):
-        return {"messages": [llm_with_tools.invoke(state["messages"])]}
+        messages = state["messages"]
+        # システムメッセージがない場合、先頭に追加
+        has_system_message = any(isinstance(msg, SystemMessage) for msg in messages)
+        if not has_system_message:
+            system_message = SystemMessage(content=system_prompt or default_system_prompt)
+            messages = [system_message] + messages
+        
+        return {"messages": [llm_with_tools.invoke(messages)]}
     
     graph_builder.add_node("chatbot", chatbot)
 
@@ -148,7 +158,7 @@ def stream_graph_updates(graph: StateGraph, user_message: str, thread_id):
     return response["messages"][-1].content
 
 # ===== 応答を返す関数 =====
-def get_bot_response(user_message, memory, thread_id):
+def get_bot_response(user_message, memory, thread_id, system_prompt=None):
     """
     ユーザーのメッセージに基づき、ボットの応答を取得します。
     初回の場合、新しいグラフを作成します。
@@ -156,7 +166,7 @@ def get_bot_response(user_message, memory, thread_id):
     global graph
     # グラフがまだ作成されていない場合、新しいグラフを作成
     if graph is None:
-        graph = build_graph(MODEL_NAME, memory)
+        graph = build_graph(MODEL_NAME, memory, system_prompt)
 
     # グラフを実行してボットの応答を取得
     return stream_graph_updates(graph, user_message, thread_id)
@@ -168,15 +178,19 @@ def get_messages_list(memory, thread_id):
     """
     messages = []
     # メモリからメッセージを取得
-    memories = memory.get({"configurable": {"thread_id": thread_id}})['channel_values']['messages']
-    for message in memories:
-        """
-        get_messages_list 関数で、改行を <br> タグに変更することで、改行が含まれるメッセージも正しく表示されるようにしています。
-        """
-        if isinstance(message, HumanMessage):
-            # ユーザーからのメッセージ
-            messages.append({'class': 'user-message', 'text': message.content.replace('\n', '<br>')})
-        elif isinstance(message, AIMessage) and message.content != "":
-            # ボットからのメッセージ（最終回答）
-            messages.append({'class': 'bot-message', 'text': message.content.replace('\n', '<br>')})
+    try:
+        memories = memory.get({"configurable": {"thread_id": thread_id}})['channel_values']['messages']
+        for message in memories:
+            """
+            get_messages_list 関数で、改行を <br> タグに変更することで、改行が含まれるメッセージも正しく表示されるようにしています。
+            """
+            if isinstance(message, HumanMessage):
+                # ユーザーからのメッセージ
+                messages.append({'class': 'user-message', 'text': message.content.replace('\n', '<br>')})
+            elif isinstance(message, AIMessage) and message.content != "":
+                # ボットからのメッセージ（最終回答）
+                messages.append({'class': 'bot-message', 'text': message.content.replace('\n', '<br>')})
+    except (KeyError, TypeError):
+        # メモリが空の場合は空のリストを返す
+        pass
     return messages

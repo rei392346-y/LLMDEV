@@ -1,36 +1,79 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="chat-box" id="chat-box">
-    {% for message in messages %}
-    <div class="{{ message.class }}">
-        {# 
-        ■改行が含まれるメッセージも正しく表示されるように
-        {{ message.text|safe }} の |safe（セーフフィルター）という機能で、<br> タグをそのまま表示させています。
-        #}
-        {{ message.text|safe }}
+<div class="main-wrapper">
+    <!-- キャラクター設定コンテナ -->
+    <div class="character-container">
+        <h2>キャラクター設定</h2>
+        
+        <!-- 現在のキャラクター情報表示 -->
+        <div class="character-info">
+            <h3>{{ character.name }}</h3>
+            <p><strong>説明:</strong> {{ character.description }}</p>
+        </div>
+
+        <!-- キャラクター設定フォーム -->
+        <form method="POST" action="/update_character" class="character-form">
+            <div class="form-group">
+                <label for="character_name">名前:</label>
+                <input type="text" id="character_name" name="character_name" 
+                       value="{{ character.name }}" placeholder="キャラクターの名前">
+            </div>
+
+            <div class="form-group">
+                <label for="character_description">説明:</label>
+                <textarea id="character_description" name="character_description" 
+                          placeholder="キャラクターの説明">{{ character.description }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="character_system_prompt">設定 (system_prompt):</label>
+                <textarea id="character_system_prompt" name="character_system_prompt" 
+                          placeholder="キャラクターの動作を定義するプロンプト">{{ character.system_prompt }}</textarea>
+            </div>
+
+            <button type="submit" class="update-button">キャラクター更新</button>
+        </form>
     </div>
-    {% endfor %}
+
+    <!-- チャットコンテナ -->
+    <div class="chat-container">
+        <header>
+            <h1>{{ character.name }}</h1>
+        </header>
+
+        <div class="chat-box" id="chat-box">
+            {% for message in messages %}
+            <div class="{{ message.class }}">
+                {# 
+                ■改行が含まれるメッセージも正しく表示されるように
+                {{ message.text|safe }} の |safe（セーフフィルター）という機能で、<br> タグをそのまま表示させています。
+                #}
+                {{ message.text|safe }}
+            </div>
+            {% endfor %}
+        </div>
+
+        <form method="POST" action="/" id="chat-form">
+            <div class="input-box">
+                {# 
+                ■画面表示時、入力欄にオートフォーカス
+                autofocus 属性を追加することで、画面表示時に入力欄へオートフォーカスさせています。あわせて required 属性を追加して入力必須としています。
+                #}
+                <textarea name="user_message" id="user-input" placeholder="メッセージを入力..." required autofocus></textarea>
+                <button type="submit" id="submit-button">送信</button>
+            </div>
+        </form>
+
+        {#
+        ■「履歴を削除」ボタンの追加
+        /clear アクションに送信する「履歴を削除」ボタンを追加しています。
+        #}
+        <form method="POST" action="/clear">
+            <button type="submit" class="clear-button">履歴を消去</button>
+        </form>
+    </div>
 </div>
-
-<form method="POST" action="/" id="chat-form">
-    <div class="input-box">
-        {# 
-        ■画面表示時、入力欄にオートフォーカス
-        autofocus 属性を追加することで、画面表示時に入力欄へオートフォーカスさせています。あわせて required 属性を追加して入力必須としています。
-        #}
-        <textarea name="user_message" id="user-input" placeholder="メッセージを入力..." required autofocus></textarea>
-        <button type="submit" id="submit-button">送信</button>
-    </div>
-</form>
-
-{#
-■「履歴を削除」ボタンの追加
-/clear アクションに送信する「履歴を削除」ボタンを追加しています。
-#}
-<form method="POST" action="/clear">
-    <button type="submit" class="clear-button">履歴を消去</button>
-</form>
 
 {#
 ■main.jsの読み込み

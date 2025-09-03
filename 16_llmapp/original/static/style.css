@@ -6,15 +6,105 @@ body {
   padding: 0;                      /* パディングを0に設定 */
 }
 
-/* メインコンテナのスタイル */
-.container {
+/* メインコンテナのスタイル（全体のラッパー） */
+.main-wrapper {
   width: 100%;                     /* 幅を100%に設定 */
-  max-width: 800px;                /* 最大幅を800pxに設定 */
+  max-width: 1200px;               /* 最大幅を1200pxに設定 */
   margin: 50px auto;               /* 上下に50pxのマージン、中央に配置 */
+  display: flex;                   /* フレックスボックスで横並び */
+  gap: 20px;                       /* 要素間の間隔 */
+}
+
+/* キャラクター設定コンテナのスタイル */
+.character-container {
+  width: 30%;                      /* 幅を30%に設定（3の部分） */
   background-color: #fff;          /* 背景色を白に設定 */
   padding: 20px;                   /* 内部のパディングを20pxに設定 */
   border-radius: 8px;              /* 角を丸くする */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* ぼかしのある影を設定 */
+  height: fit-content;             /* 内容に合わせて高さを調整 */
+}
+
+/* チャットコンテナのスタイル */
+.chat-container {
+  width: 70%;                      /* 幅を70%に設定（7の部分） */
+  background-color: #fff;          /* 背景色を白に設定 */
+  padding: 20px;                   /* 内部のパディングを20pxに設定 */
+  border-radius: 8px;              /* 角を丸くする */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* ぼかしのある影を設定 */
+}
+
+/* キャラクター設定のタイトル */
+.character-container h2 {
+  margin-top: 0;
+  color: #333;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+/* キャラクター設定フォームのスタイル */
+.character-form .form-group {
+  margin-bottom: 15px;
+}
+
+.character-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.character-form input[type="text"],
+.character-form textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.character-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.character-form .update-button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.character-form .update-button:hover {
+  background-color: #218838;
+}
+
+/* キャラクター情報表示 */
+.character-info {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  border-left: 4px solid #007bff;
+}
+
+.character-info h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #007bff;
+}
+
+.character-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #666;
 }
 
 /* チャットボックスのスタイル */
@@ -124,4 +214,27 @@ body {
 /* 履歴を消去するボタンのホバー時のスタイル */
 .clear-button:hover {
   background-color: #c82333;        /* ホバー時に赤色を少し暗くする */
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .main-wrapper {
+    flex-direction: column;
+    max-width: 95%;
+    margin: 20px auto;
+    gap: 15px;
+  }
+  
+  .character-container,
+  .chat-container {
+    width: 100%;
+  }
+  
+  .character-container {
+    order: 2;
+  }
+  
+  .chat-container {
+    order: 1;
+  }
 }
