@@ -106,9 +106,13 @@ body {
   box-sizing: border-box;
 }
 
-.character-form textarea {
-  min-height: 80px;
-  height: 200px;
+.character-form textarea[name="character_description"] {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.character-form textarea[name="character_system_prompt"] {
+  min-height: 320px;
   resize: vertical;
 }
 
