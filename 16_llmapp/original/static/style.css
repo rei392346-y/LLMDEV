@@ -232,9 +232,19 @@ body {
   
   .character-container {
     order: 2;
+    transform: none !important;     /* モバイルでは折り畳み無効 */
   }
   
   .chat-container {
     order: 1;
+    width: 100% !important;         /* モバイルでは常に全幅 */
+  }
+  
+  .toggle-button {
+    display: none;                  /* モバイルではトグルボタン非表示 */
+  }
+  
+  .chat-container.expanded {
+    width: 100% !important;
   }
 }

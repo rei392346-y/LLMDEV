@@ -4,6 +4,9 @@
 <div class="main-wrapper">
     <!-- キャラクター設定コンテナ -->
     <div class="character-container">
+        <!-- 折り畳みトグルボタン -->
+        <button type="button" class="toggle-button" id="toggle-button">◀</button>
+        
         <h2>キャラクター設定</h2>
         
         <!-- 現在のキャラクター情報表示 -->
@@ -80,4 +83,4 @@
 フロントエンド側の、細かな画面制御にはJavaScriptが必要です。それらを実現するためにJavaScriptが書かれた main.js ファイルを読み込んでいます。
 #}
 <script src="{{ url_for('static', filename='main.js') }}"></script>
-{% endblock %}
+{% endblock %} 
