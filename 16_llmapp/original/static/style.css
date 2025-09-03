@@ -13,6 +13,7 @@ body {
   margin: 50px auto;               /* 上下に50pxのマージン、中央に配置 */
   display: flex;                   /* フレックスボックスで横並び */
   gap: 20px;                       /* 要素間の間隔 */
+  position: relative;              /* 相対位置 */
 }
 
 /* キャラクター設定コンテナのスタイル */
@@ -23,6 +24,20 @@ body {
   border-radius: 8px;              /* 角を丸くする */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* ぼかしのある影を設定 */
   height: fit-content;             /* 内容に合わせて高さを調整 */
+  position: relative;              /* 相対位置 */
+  transition: all 0.3s ease;      /* アニメーション効果 */
+}
+
+/* 折り畳み時のスタイル */
+.character-container.collapsed {
+  width: 40px;                     /* 折り畳み時の幅 */
+  padding: 2px;                   /* パディングを減らす */
+  height: auto;                   /* 高さを自動調整 */
+  overflow: hidden;                /* はみ出た内容を隠す */
+}
+
+.character-container.collapsed > *:not(.toggle-button) {
+  display: none;                   /* トグルボタン以外を非表示 */
 }
 
 /* チャットコンテナのスタイル */
@@ -32,6 +47,32 @@ body {
   padding: 20px;                   /* 内部のパディングを20pxに設定 */
   border-radius: 8px;              /* 角を丸くする */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* ぼかしのある影を設定 */
+  transition: width 0.3s ease;     /* 幅変更のアニメーション */
+}
+
+/* キャラクター設定が折り畳まれた時のチャットコンテナ */
+.character-container.collapsed ~ .chat-container {
+  width: calc(95% - 50px);        /* 折り畳み時にチャット幅を拡張 */
+}
+
+/* トグルボタンのスタイル */
+.toggle-button {
+  position: absolute;              /* 絶対位置 */
+  right: 5px;                      /* 右端から5px */
+  top: 10px;                       /* 上から10px */
+  background-color: #007bff;       /* 背景色 */
+  color: white;                    /* 文字色 */
+  border: none;                    /* 境界線なし */
+  border-radius: 3px;              /* 角を丸くする */
+  padding: 5px 10px;               /* パディング */
+  cursor: pointer;                 /* カーソル */
+  font-size: 14px;                 /* フォントサイズ */
+  z-index: 10;                     /* 最前面に表示 */
+  transition: background-color 0.3s; /* ホバー効果 */
+}
+
+.toggle-button:hover {
+  background-color: #0056b3;       /* ホバー時の色 */
 }
 
 /* キャラクター設定のタイトル */
@@ -67,6 +108,7 @@ body {
 
 .character-form textarea {
   min-height: 80px;
+  height: 200px;
   resize: vertical;
 }
 
@@ -111,7 +153,7 @@ body {
 .chat-box {
   border: 1px solid #ddd;         /* 薄いグレーの境界線 */
   padding: 20px;                   /* 内部パディングを20pxに設定 */
-  height: 400px;                   /* 高さを400pxに設定 */
+  height: 600px;                   /* 高さを600pxに設定 */
   overflow-y: auto;                /* メッセージが多い場合に縦方向にスクロール */
   margin-bottom: 20px;             /* 下部に20pxのマージン */
   background-color: #fafafa;       /* 背景色を淡いグレーに設定 */
@@ -235,6 +277,15 @@ body {
     transform: none !important;     /* モバイルでは折り畳み無効 */
   }
   
+  .character-container.collapsed {
+    width: 100%;                   /* モバイルでは折り畳まない */
+    padding: 20px;
+  }
+  
+  .character-container.collapsed > *:not(.toggle-button) {
+    display: block;                /* モバイルでは常に表示 */
+  }
+  
   .chat-container {
     order: 1;
     width: 100% !important;         /* モバイルでは常に全幅 */
@@ -242,9 +293,5 @@ body {
   
   .toggle-button {
     display: none;                  /* モバイルではトグルボタン非表示 */
-  }
-  
-  .chat-container.expanded {
-    width: 100% !important;
   }
 }
